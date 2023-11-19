@@ -1,20 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { StyleSheet, View, SafeAreaView, FlatList } from "react-native";
+import { Input } from "./src/components/Input";
+import { Message } from "./src/components/Message";
+
+type message = {
+  text: string;
+  id: number;
+};
 
 export default function App() {
+  const [messages, setMessages] = useState<message[]>([]);
+  const addEet = (text: string) => {
+    if (text === "") return;
+    setMessages([...messages, { text, id: Date.now() }]);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Input onClick={addEet} />
+        <FlatList
+          data={messages}
+          renderItem={({ item }) => <Message text={item.text} />}
+          keyExtractor={(item) => `${item.id}`}
+        />
+        <StatusBar style="light" />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#222",
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 20,
   },
 });
